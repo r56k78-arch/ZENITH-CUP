@@ -90,7 +90,7 @@ function showPage(page){
  $('pageTitle').innerHTML='<span class="tag">ZENITH CUP ARENA</span><h2>'+pageInfo[page][0]+'</h2><p class="muted">'+pageInfo[page][1]+'</p>';
  window.scrollTo({top:0,behavior:'smooth'});
 }
-document.querySelectorAll('.nav-link').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('.nav-link,.dock-link').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 function openGame(game){selectedGame=game;showPage('tournaments');loadData()}
 function hideAuth(){ $('authPanel').classList.add('hidden') }
 function toggleAuthMode(e){e.preventDefault();signupMode=!signupMode;$('authTitle').textContent=signupMode?'Create account':'Sign in';$('authSubmit').textContent=signupMode?'Create account':'Sign in';$('usernameSignupField').classList.toggle('hidden',!signupMode);$('authSwitch').innerHTML=signupMode?'Already registered? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Sign in</a>':'New here? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Create account</a>';$('authMessage').classList.add('hidden')}
