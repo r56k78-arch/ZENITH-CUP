@@ -55,3 +55,27 @@ drop policy if exists "Admins can review payment requests" on public.payment_req
 create policy "Admins can review payment requests" on public.payment_requests for update to authenticated
 using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
 with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+
+
+-- Top banner + video link support (safe to run on an existing shop_items table)
+alter table public.shop_items add column if not exists video_url text;
+alter table public.shop_items add column if not exists is_top_banner boolean not null default false;
+
+-- Public image storage bucket for banner images uploaded from the admin phone Gallery.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('zenith-banners', 'zenith-banners', true, 5242880, array['image/jpeg','image/png','image/webp','image/gif'])
+on conflict (id) do update set public = true, file_size_limit = 5242880, allowed_mime_types = array['image/jpeg','image/png','image/webp','image/gif'];
+
+drop policy if exists "Admins upload Zenith banners" on storage.objects;
+create policy "Admins upload Zenith banners" on storage.objects for insert to authenticated
+with check (bucket_id = 'zenith-banners' and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+drop policy if exists "Admins update Zenith banners" on storage.objects;
+create policy "Admins update Zenith banners" on storage.objects for update to authenticated
+using (bucket_id = 'zenith-banners' and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
+with check (bucket_id = 'zenith-banners' and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+drop policy if exists "Admins delete Zenith banners" on storage.objects;
+create policy "Admins delete Zenith banners" on storage.objects for delete to authenticated
+using (bucket_id = 'zenith-banners' and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+drop policy if exists "Public can view Zenith banners" on storage.objects;
+create policy "Public can view Zenith banners" on storage.objects for select to public
+using (bucket_id = 'zenith-banners');
