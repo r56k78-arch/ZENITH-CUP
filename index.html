@@ -79,9 +79,12 @@ function showPage(page){
  ['homeHero','homeStats','gameHub','tournaments','matchesPage','walletPage','shopPage','rulesPage','resultsPage','notificationsPage','leaderboard','account','admin'].forEach(id=>$(id)?.classList.add('hidden'));
  if(page==='home'){$('homeHero').classList.remove('hidden');$('homeStats').classList.remove('hidden');$('gameHub').classList.remove('hidden')}
  if(page==='tournaments')$('tournaments').classList.remove('hidden');
- if(page==='matches'){$('matchesPage').classList.remove('hidden');renderDemoJoined()}\n if(page==='wallet'){$('walletPage').classList.remove('hidden');renderDemoWallet()}
+ if(page==='matches'){$('matchesPage').classList.remove('hidden');renderDemoJoined()}
+ if(page==='wallet'){$('walletPage').classList.remove('hidden');renderDemoWallet()}
  if(page==='shop')$('shopPage').classList.remove('hidden');
- if(page==='rules')$('rulesPage').classList.remove('hidden');\n if(page==='results'){$('resultsPage').classList.remove('hidden');renderDemoResults()}\n if(page==='notifications'){$('notificationsPage').classList.remove('hidden');renderDemoNotifications()}
+ if(page==='rules')$('rulesPage').classList.remove('hidden');
+ if(page==='results'){$('resultsPage').classList.remove('hidden');renderDemoResults()}
+ if(page==='notifications'){$('notificationsPage').classList.remove('hidden');renderDemoNotifications()}
  if(page==='leaderboard')$('leaderboard').classList.remove('hidden');
  if(page==='profile'&&currentUser)$('account').classList.remove('hidden');
  if(page==='admin'&&profile?.role==='admin'){$('admin').classList.remove('hidden');loadAdminTournaments()}
