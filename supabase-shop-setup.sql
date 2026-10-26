@@ -24,7 +24,15 @@ create policy "Admins can manage shop items" on public.shop_items for all to aut
 using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
 with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
 drop policy if exists "Public can read Telegram setting" on public.site_settings;
-create policy "Public can read Telegram setting" on public.site_settings for select to anon, authenticated using (key = 'telegram_help_url');
+drop policy if exists "Public can read public wallet settings" on public.site_settings;
+create policy "Public can read public wallet settings" on public.site_settings for select to anon, authenticated using (key in ('telegram_help_url', 'payment_bkash_number', 'payment_nagad_number'));
+
+-- Default values ensure the Wallet settings table is ready on first setup.
+insert into public.site_settings (key, value) values
+  ('telegram_help_url', 'https://t.me/'),
+  ('payment_bkash_number', '01751949571'),
+  ('payment_nagad_number', '01751949571')
+on conflict (key) do nothing;
 drop policy if exists "Admins can manage site settings" on public.site_settings;
 create policy "Admins can manage site settings" on public.site_settings for all to authenticated
 using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
