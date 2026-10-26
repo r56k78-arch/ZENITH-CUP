@@ -100,8 +100,10 @@ function showPage(page){
 document.querySelectorAll('.nav-link,.dock-link').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 function openGame(game){selectedGame=game;showPage('tournaments');loadData()}
 function hideAuth(){ $('authPanel').classList.add('hidden') }
-function revealPaymentNumber(method){const panel=$('paymentNumberPanel');if(!panel)return;const valid=['bKash','Nagad'].includes(method);panel.classList.toggle('hidden',!valid);panel.innerHTML=valid?'<b>'+escapeHtml(method)+' payment number</b><div style="font-size:24px;font-weight:950;letter-spacing:1px;margin:6px 0">01751949571</div><button type="button" class="secondary" onclick="GenUICopyNumber()">Copy number</button><p class="muted">Send money first, then enter the Transaction ID below. Demo only: no real balance is credited.</p>':'';if(valid&&$('depositMethod'))$('depositMethod').value=method}
-function GenUICopyNumber(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('01751949571').then(()=>msg('Payment number copied.')).catch(()=>msg('Payment number: 01751949571'));}else{msg('Payment number: 01751949571')}}
+let paymentNumbers={bKash:"01751949571",Nagad:"01751949571"};
+function showWalletOption(option){const dep=$('walletDepositOption'),wd=$('walletWithdrawOption');if(dep)dep.classList.toggle('hidden',option!=='deposit');if(wd)wd.classList.toggle('hidden',option!=='withdraw');}
+function revealPaymentNumber(method){const panel=$('paymentNumberPanel');if(!panel)return;const valid=['bKash','Nagad'].includes(method),number=valid?(paymentNumbers[method]||'Not configured by admin yet'):'';panel.classList.toggle('hidden',!valid);panel.innerHTML=valid?'<b>'+escapeHtml(method)+' payment number</b><div style="font-size:24px;font-weight:950;letter-spacing:1px;margin:6px 0">'+escapeHtml(number)+'</div><button type="button" class="secondary" onclick="GenUICopyNumber(\\''+method+'\\')">Copy number</button><p class="muted">Send payment first, then enter the Transaction ID below.</p>':'';if(valid&&$('depositMethod'))$('depositMethod').value=method}
+function GenUICopyNumber(method){const number=paymentNumbers[method]||'';if(!number){msg('Admin has not set this payment number yet.');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(number).then(()=>msg('Payment number copied.')).catch(()=>msg('Payment number: '+number));}else{msg('Payment number: '+number)}}
 
 async function loadShopItems(){
  const box=$('shopItems');if(!box||!db)return;
