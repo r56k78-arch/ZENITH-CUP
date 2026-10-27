@@ -39,28 +39,31 @@ body.immersive-page .zenith-profile{max-width:560px;margin:0 auto;min-height:100
 .zw-row{display:block;width:100%;background:#101b40d9;border:1px solid #456ab4;color:#fff;border-radius:14px;padding:14px;margin:10px 0;text-align:left}.zw-row h3{margin:0 0 9px}.zw-row span{float:right}.zw-help h3{margin-top:22px}
  .notice-popup{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#080d20b8;padding:22px;border:0;margin:0;border-radius:0}.notice-popup-card{width:min(100%,440px);background:linear-gradient(145deg,#9bd8ff,#4d79e8 42%,#25145f);color:#fff;border-radius:20px;padding:22px;box-shadow:0 20px 60px #0006}.notice-popup-card h2{margin:0 0 12px}.notice-popup-card button{width:100%;background:#fff;color:#25145f;margin-top:12px}.notice-popup.hidden{display:none!important}
 
-/* ZENITH CUP unified blue-to-purple theme */
+/* ZENITH CUP: blue site accents, dark buttons */
 :root{--gold:#3987f5;--gold-dark:#3767db}
 html[data-theme="dark"]{--gold:#54b8ff;--gold-dark:#9b8cff}
-button:not(.secondary):not(.zp-menu button):not(.zp-logout){background:linear-gradient(120deg,#169fe8,#365be8 58%,#7539e8);color:#fff}
+button:not(.zp-logout){background:#101b40;color:#fff;border:1px solid #315da9}
+button.secondary{background:#101b40;color:#fff;border-color:#315da9}
 a{color:#397de8}
 input:focus,select:focus{border-color:#3987f5;box-shadow:0 0 0 3px #3987f526}
 .hero{background:linear-gradient(125deg,#079fe8 0%,#365be8 52%,#25145f 100%)}
 .hero:after{background:#b5dfff24}
 .hero .tag,.hero .big,.hero-card .big,.hero-card.hero-banner-active .banner-caption{color:#eaf5ff}
 .hero-card{background:#ffffff12;border-color:#ffffff30}
-.nav-link.active{background:linear-gradient(120deg,#169fe8,#365be8 58%,#7539e8);color:#fff;border-color:#63bfff}
-.dock-link.active,html[data-theme="dark"] .dock-link.active{background:linear-gradient(120deg,#169fe8,#365be8 58%,#7539e8);color:#fff}
+.nav-link.active{background:#101b40;color:#fff;border-color:#3987f5}
+.dock-link.active,html[data-theme="dark"] .dock-link.active{background:#101b40;color:#fff}
 .game-tile:hover{border-color:#3987f5}
 .game-action,.brand span{color:#3987f5}
 .pill{border-color:#3987f555;background:#eaf3ff;color:#234f9d}
 html[data-theme="dark"] .pill{background:#182c50;color:#a9d5ff;border-color:#315d9e}
-.website-contact,.floating-deposit,.floating-help{background:linear-gradient(120deg,#169fe8,#365be8 58%,#7539e8);color:#fff;border-color:#69c9ff}
+.website-contact,.floating-deposit,.floating-help{background:#101b40;color:#fff;border-color:#3987f5}
 .notice{border-color:#6aa9f566}
 #paymentNumberPanel{border-color:#3987f5;background:var(--surface-2)}
 .zp-menu button{background:#101b40d9;border-color:#3987f5}
 .zp-menu i{background:linear-gradient(135deg,#09aaff,#5629ee)}
-
+.zp-logout{background:#d92748;color:#fff}
+.notice-popup-card{background:linear-gradient(145deg,#9bd8ff,#4d79e8 42%,#25145f);color:#fff}
+.notice-popup-card button{background:#101b40;color:#fff;border:1px solid #69c9ff}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -185,7 +188,7 @@ async function renderBannerShowcase(){
  }
 }
 
-function closeSiteNotice(){ $('siteNoticePopup').classList.add('hidden');try{sessionStorage.setItem('zenith-notice-dismissed','1')}catch(e){}} 
+function closeSiteNotice(){$('siteNoticePopup').classList.add('hidden');try{sessionStorage.setItem('zenith-notice-dismissed',String($('siteNoticePopupText').textContent||'1'))}catch(e){}}catch(e){}} 
 function toggleServiceContact(){const panel=$('serviceContact');panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))panel.scrollIntoView({behavior:'smooth',block:'nearest'})}
 
 function toggleAuthMode(e){e.preventDefault();signupMode=!signupMode;$('authTitle').textContent=signupMode?'Create account':'Sign in';$('authSubmit').textContent=signupMode?'Create account':'Sign in';$('usernameSignupField').classList.toggle('hidden',!signupMode);$('authSwitch').innerHTML=signupMode?'Already registered? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Sign in</a>':'New here? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Create account</a>';$('authMessage').classList.add('hidden')}
