@@ -188,7 +188,7 @@ async function renderBannerShowcase(){
  }
 }
 
-function closeSiteNotice(){$('siteNoticePopup').classList.add('hidden');try{sessionStorage.setItem('zenith-notice-dismissed',String($('siteNoticePopupText').textContent||'1'))}catch(e){}}catch(e){}} 
+function closeSiteNotice(){$('siteNoticePopup').classList.add('hidden');try{sessionStorage.setItem('zenith-notice-dismissed',String($('siteNoticePopupText').textContent||'1'))}catch(e){}} 
 function toggleServiceContact(){const panel=$('serviceContact');panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))panel.scrollIntoView({behavior:'smooth',block:'nearest'})}
 
 function toggleAuthMode(e){e.preventDefault();signupMode=!signupMode;$('authTitle').textContent=signupMode?'Create account':'Sign in';$('authSubmit').textContent=signupMode?'Create account':'Sign in';$('usernameSignupField').classList.toggle('hidden',!signupMode);$('authSwitch').innerHTML=signupMode?'Already registered? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Sign in</a>':'New here? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--gold)">Create account</a>';$('authMessage').classList.add('hidden')}
