@@ -205,21 +205,21 @@ function joinDemoMatch(name,fee){const d=readDemo();if(d.joined.some(m=>m.name==
  if(box)box.innerHTML='<div class="empty">Loading wallet and history…</div>';
  try{
   const [{data:prof,error:pe},{data:reqs,error:re},{data:txs,error:te}]=await Promise.all([
-   db.from('profiles').select('wallet_balance').eq('id',currentUser.id).maybeSingle(),
+   db.from('profiles').select('wallet_balance,deposit_balance,winning_balance').eq('id',currentUser.id).maybeSingle(),
    db.from('payment_requests').select('id,type,amount,method,status,transaction_id,created_at,reviewed_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50),
    db.from('wallet_transactions').select('id,type,amount,status,description,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50)
   ]);
   if(pe)throw pe;if(re)throw re;if(te)throw te;
-  const approvedDeposits=(reqs||[]).filter(x=>x.type==='deposit'&&x.status==='approved').reduce((s,x)=>s+Number(x.amount||0),0);
-  const winnings=(txs||[]).filter(x=>String(x.type||'').toLowerCase()==='winning'&&String(x.status||'').toLowerCase()==='completed').reduce((s,x)=>s+Number(x.amount||0),0);
+  const depositBalance=Number(prof?.deposit_balance||0);
+  const winningBalance=Number(prof?.winning_balance||0);
   $('walletBalance').textContent=money(prof?.wallet_balance||0);
-  $('depositedBalance').textContent=money(approvedDeposits);
-  $('winningBalance').textContent=money(winnings);
+  $('depositedBalance').textContent=money(depositBalance);
+  $('winningBalance').textContent=money(winningBalance);
   const requestRows=(reqs||[]).map(x=>({date:x.created_at,type:x.type,amount:x.amount,method:x.method,status:x.status,detail:x.transaction_id?'TrxID: '+x.transaction_id:''}));
   const otherRows=(txs||[]).filter(x=>!['deposit','withdrawal'].includes(String(x.type||'').toLowerCase())).map(x=>({date:x.created_at,type:x.type,amount:x.amount,method:x.description,status:x.status,detail:''}));
   const rows=[...requestRows,...otherRows].sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(box)box.innerHTML=rows.length?rows.map(x=>'<div class="admin-item"><div><b>'+escapeHtml(String(x.type||'Payment').toUpperCase())+' · '+money(x.amount)+'</b><div class="muted">'+escapeHtml(x.method||'')+(x.detail?' · '+escapeHtml(x.detail):'')+' · '+escapeHtml(prettyDate(x.date))+'</div></div><span class="pill">'+escapeHtml(x.status||'pending')+'</span></div>').join(''):'<div class="empty">No deposit or withdrawal history yet.</div>';
-  const pc=$('profileDepositCount');if(pc)pc.textContent=money(approvedDeposits);
+  const pc=$('profileDepositCount');if(pc)pc.textContent=money(depositBalance);
  }catch(err){if(box)box.innerHTML='<div class="notice">Wallet/history could not load: '+escapeHtml(err.message||String(err))+'</div>';console.error('Wallet load failed:',err)}
 }
 function renderDemoResults(){const d=readDemo();$('resultList').innerHTML=d.results.length?d.results.slice().reverse().map(r=>'<div class="admin-item"><div><b>'+escapeHtml(r.match)+'</b><div class="muted">Score: '+escapeHtml(r.score)+' · <a target="_blank" rel="noopener" href="'+escapeHtml(r.proof)+'" style="color:var(--gold)">View screenshot</a></div><div class="muted">'+escapeHtml(r.date)+'</div></div><span class="pill">Demo pending</span></div>').join(''):'<div class="empty">No results submitted yet.</div>'}
